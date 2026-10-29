@@ -78,9 +78,9 @@ window.AP_PROJECTS = [
     role: "Captação, Edição",
     award: "",
     video: v("festival-de-parintins"),
-    start: 4.9,
+    start: 0.3,
     vertical: true,
-    instagram: ig("DLay9H_v2Zj"),
+    instagram: ig("DZ53Y90BraG"),
     quotes: [],
     description: "A temporada da Feira D na ilha durante o festival: o rio, a cidade, as pessoas e a cultura do boi-bumbá."
   },
