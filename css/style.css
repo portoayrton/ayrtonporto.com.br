@@ -418,15 +418,27 @@ body.menu-open .nav__burger span:last-child { transform: translateY(-6px) rotate
   font-size: 10px; letter-spacing: .18em; text-transform: uppercase; opacity: 0; transition: opacity .3s;
 }
 .pv.is-ready .pv__sound { opacity: 1; }
-.pv__info { position: absolute; top: 0; bottom: 0; right: 0; padding: 90px 0 48px; overflow-y: auto; display: flex; flex-direction: column; justify-content: center; gap: 22px; }
-.pv__close { position: absolute; top: 28px; right: 0; }
+.pv__info { position: absolute; top: 0; bottom: 0; right: 0; padding: 90px 0 48px; min-width: 0; overflow-y: auto; overscroll-behavior: contain; display: flex; flex-direction: column; justify-content: flex-start; gap: 22px; }
+/* centraliza quando cabe; quando não cabe, começa no topo e rola dentro da coluna (nada fica cortado) */
+.pv__cat { margin-top: auto; }
+.pv__actions { margin-bottom: auto; }
+.pv__close { position: fixed; top: 26px; right: var(--gutter); z-index: 3; }
 .pv__cat { font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: var(--yellow); }
-.pv__title { margin: -6px 0 0; font-weight: 900; font-size: clamp(38px, 4.6vw, 76px); line-height: .92; text-transform: uppercase; }
+.pv__title { margin: -6px 0 0; font-weight: 900; font-size: clamp(30px, 4.6vw, 76px); line-height: .95; text-transform: uppercase; overflow-wrap: normal; word-break: keep-all; }
 .pv__facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 24px; margin: 6px 0 0; padding: 18px 0; border-top: 1.5px solid rgba(255,255,227,.18); border-bottom: 1.5px solid rgba(255,255,227,.18); }
 .pv__facts dt { font-size: 10px; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
 .pv__facts dd { margin: 0; font-size: 14px; letter-spacing: .04em; }
 .pv__desc { margin: 0; font-size: 16px; line-height: 1.6; color: rgba(255,255,227,.85); max-width: 52ch; }
 .pv__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 22px; margin-top: 6px; }
+/* notebooks com tela baixa: tudo um pouco mais compacto */
+@media (min-width: 801px) and (max-height: 780px) {
+  .pv__info { padding: 74px 0 28px; gap: 14px; }
+  .pv__title { font-size: clamp(28px, 3.6vw, 60px); }
+  .pv__facts { padding: 12px 0; gap: 10px 20px; }
+  .pv__desc { font-size: 14px; line-height: 1.5; }
+  .ig-btn--big { padding: 13px 20px 13px 16px; font-size: 12px; }
+  .pv__close { top: 18px; }
+}
 @media (max-width: 800px) {
   .pv__info { left: var(--gutter) !important; right: var(--gutter) !important; width: auto !important; justify-content: flex-start; padding-top: 0; padding-bottom: 32px; overflow: visible; }
   .pv { overflow-y: auto; }

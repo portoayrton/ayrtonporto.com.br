@@ -126,7 +126,7 @@
 
   document.body.insertAdjacentHTML(
     "beforeend",
-    `<div class="pv" role="dialog" aria-modal="true" aria-label="Projeto" aria-hidden="true">
+    `<div class="pv" data-lenis-prevent role="dialog" aria-modal="true" aria-label="Projeto" aria-hidden="true">
        <div class="pv__bg"></div>
        <div class="pv__media"><video playsinline loop muted preload="auto"></video>
          <button class="pv__sound" type="button" aria-pressed="false">Ativar som</button></div>

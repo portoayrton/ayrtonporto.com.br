@@ -88,11 +88,13 @@
         const w = W - 2 * m, h = Math.min(w / ar, H * 0.62);
         return { media: { left: m, top: 70, width: Math.min(w, h * ar), height: h, x: (W - Math.min(w, h * ar)) / 2 }, info: { top: 70 + h + 28 } };
       }
-      const infoW = Math.min(520, Math.max(360, W * 0.34));
+      const infoW = Math.min(560, Math.max(400, W * 0.32));   // coluna das informações: nem estreita nem espalhada
+      const gap = m * 1.5;
       let h = H - 2 * m, w = h * ar;
-      const maxW = W - infoW - 3 * m;
+      const maxW = W - infoW - gap - 2 * m;
       if (w > maxW) { w = maxW; h = w / ar; }
-      return { media: { left: m, top: (H - h) / 2, width: w, height: h }, info: { left: m + w + m * 1.5, width: W - (m + w + m * 1.5) - m } };
+      const x0 = Math.max(m, (W - (w + gap + infoW)) / 2);   // vídeo + informações centralizados na tela
+      return { media: { left: x0, top: (H - h) / 2, width: w, height: h }, info: { left: x0 + w + gap, width: infoW } };
     };
 
     const fill = (p) => {
@@ -107,6 +109,17 @@
       pv.querySelector(".pv__page").href = "projeto.html?slug=" + p.slug;
     };
 
+    // o título diminui só o necessário para caber na coluna (palavra longa não quebra no meio)
+    const fitTitle = () => {
+      const t = pv.querySelector(".pv__title");
+      t.style.fontSize = "";
+      let fs = parseFloat(getComputedStyle(t).fontSize);
+      const words = (t.textContent || "").split(/\s+/);
+      const longest = () => { const r = document.createRange(); let w = 0;
+        t.innerHTML = words.map((x) => `<span style="white-space:nowrap">${escHtml(x)}</span>`).join(" ");
+        t.querySelectorAll("span").forEach((s) => { w = Math.max(w, s.getBoundingClientRect().width); }); return w; };
+      for (let i = 0; i < 40 && fs > 18 && longest() > t.clientWidth; i++) { fs *= 0.94; t.style.fontSize = fs + "px"; }
+    };
     const open = (slug, src, push = true, kb = false) => {
       const p = PROJ.find((x) => x.slug === slug);
       if (!p || current) return;
@@ -122,6 +135,7 @@
       if (innerWidth <= 800) { Object.assign(pvInfo.style, { left: "", width: "", top: L.info.top + "px", bottom: "auto" }); }
       else Object.assign(pvInfo.style, { left: L.info.left + "px", width: L.info.width + "px", top: "0", bottom: "0" });
       pv.classList.add("is-open"); pv.setAttribute("aria-hidden", "false");
+      fitTitle();
       document.body.style.overflow = "hidden"; lenis && lenis.stop();
       if (src) src.style.visibility = "hidden";
       if (push) history.pushState({ pv: slug }, "", "#projeto=" + slug);
@@ -193,6 +207,7 @@
       const L = layout(current.p, current.src);
       gsap.set(pvMedia, { left: L.media.x ?? L.media.left, top: L.media.top, width: L.media.width, height: L.media.height });
       if (innerWidth > 800) Object.assign(pvInfo.style, { left: L.info.left + "px", width: L.info.width + "px" });
+      fitTitle();
     });
     // link direto (#projeto=slug) abre o projeto ao carregar
     const m = location.hash.match(/^#projeto=([\w-]+)/);
