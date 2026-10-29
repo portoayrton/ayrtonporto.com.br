@@ -60,10 +60,147 @@
   document.querySelectorAll("[data-preview]").forEach((el) => {
     const v = el.querySelector("video");
     if (touch) return io.observe(el);
-    const host = el.closest("a") || el;
+    const host = el.closest(".card, .feature") || el;
     host.addEventListener("mouseenter", () => { v.currentTime = Number(v.dataset.start) || 0; play(v); });
     host.addEventListener("mouseleave", () => v.pause());
   });
+
+  /* ---------- Painel do projeto ----------
+     Clicar num projeto: o vídeo sai do card e cresce até o lado esquerdo (no formato dele),
+     e as informações entram pela direita. Fecha com X, Esc, clique fora ou "voltar". */
+  const PROJ = window.AP_PROJECTS || [];
+  const pv = document.querySelector(".pv");
+  if (pv) {
+    const pvMedia = pv.querySelector(".pv__media"), pvVideo = pvMedia.querySelector("video");
+    const pvInfo = pv.querySelector(".pv__info"), pvBg = pv.querySelector(".pv__bg");
+    const pvSound = pv.querySelector(".pv__sound");
+    const escHtml = (t) => String(t ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+    let current = null;                       // { p, src (elemento de mídia do card) }
+    const EASE = "expo.inOut";
+
+    const rectOf = (el) => { const r = el.getBoundingClientRect(); return { left: r.left, top: r.top, width: r.width, height: r.height }; };
+    // onde o vídeo fica aberto: lado esquerdo, no formato do vídeo; no celular, em cima
+    const layout = (p, src) => {
+      const W = innerWidth, H = innerHeight, m = Math.max(16, Math.min(40, W * 0.025));
+      const v = src && src.querySelector("video");
+      const ar = v && v.videoWidth ? v.videoWidth / v.videoHeight : (p.vertical ? 9 / 16 : 16 / 9);
+      if (W <= 800) {
+        const w = W - 2 * m, h = Math.min(w / ar, H * 0.62);
+        return { media: { left: m, top: 70, width: Math.min(w, h * ar), height: h, x: (W - Math.min(w, h * ar)) / 2 }, info: { top: 70 + h + 28 } };
+      }
+      const infoW = Math.min(520, Math.max(360, W * 0.34));
+      let h = H - 2 * m, w = h * ar;
+      const maxW = W - infoW - 3 * m;
+      if (w > maxW) { w = maxW; h = w / ar; }
+      return { media: { left: m, top: (H - h) / 2, width: w, height: h }, info: { left: m + w + m * 1.5, width: W - (m + w + m * 1.5) - m } };
+    };
+
+    const fill = (p) => {
+      pv.querySelector(".pv__cat").textContent = p.category || "";
+      pv.querySelector(".pv__title").textContent = p.title || "";
+      const facts = [["Cliente", p.client], ["Direção", p.director], ["Função", p.role], ["Ano", p.year]].filter(([, v]) => v);
+      pv.querySelector(".pv__facts").innerHTML = facts.map(([k, v]) => `<div><dt>${k}</dt><dd>${escHtml(v)}</dd></div>`).join("");
+      pv.querySelector(".pv__desc").textContent = p.description || "";
+      const ig = pv.querySelector(".ig-btn");
+      ig.style.display = p.instagram ? "" : "none";
+      if (p.instagram) ig.href = p.instagram;
+      pv.querySelector(".pv__page").href = "projeto.html?slug=" + p.slug;
+    };
+
+    const open = (slug, src, push = true, kb = false) => {
+      const p = PROJ.find((x) => x.slug === slug);
+      if (!p || current) return;
+      current = { p, src };
+      fill(p);
+      const L = layout(p, src);
+      const srcVideo = src && src.querySelector("video");
+      pvVideo.src = (srcVideo && (srcVideo.currentSrc || srcVideo.src)) || p.video;
+      pvVideo.muted = true; pvSound.textContent = "Ativar som"; pvSound.setAttribute("aria-pressed", "false");
+      if (srcVideo && srcVideo.currentTime) { try { pvVideo.currentTime = srcVideo.currentTime; } catch (e) {} }
+      play(pvVideo);
+      const from = src ? rectOf(src) : { left: innerWidth / 2 - 40, top: innerHeight / 2 - 40, width: 80, height: 80 };
+      if (innerWidth <= 800) { Object.assign(pvInfo.style, { left: "", width: "", top: L.info.top + "px", bottom: "auto" }); }
+      else Object.assign(pvInfo.style, { left: L.info.left + "px", width: L.info.width + "px", top: "0", bottom: "0" });
+      pv.classList.add("is-open"); pv.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden"; lenis && lenis.stop();
+      if (src) src.style.visibility = "hidden";
+      if (push) history.pushState({ pv: slug }, "", "#projeto=" + slug);
+      const to = { left: L.media.x ?? L.media.left, top: L.media.top, width: L.media.width, height: L.media.height };
+      if (!hasGsap || reduce) {
+        Object.assign(pvMedia.style, { left: to.left + "px", top: to.top + "px", width: to.width + "px", height: to.height + "px" });
+        pvBg.style.opacity = 1; pv.classList.add("is-ready"); return;
+      }
+      gsap.killTweensOf([pvMedia, pvBg, ".pv-in"]);
+      gsap.set(pvMedia, { ...from, borderRadius: src ? getComputedStyle(src).borderRadius : "50%" });
+      gsap.set(".pv-in, .pv__close", { opacity: 0, x: 40 });
+      const tlOpen = gsap.timeline()
+        .to(pvBg, { opacity: 1, duration: 0.6, ease: "power2.out" }, 0)
+        .to(pvMedia, { ...to, borderRadius: 18, duration: 1.05, ease: EASE }, 0)
+        .to(".pv-in, .pv__close", { opacity: 1, x: 0, duration: 0.8, ease: "expo.out", stagger: 0.07 }, 0.55)
+        .add(() => pv.classList.add("is-ready"), 0.9);
+      // garantia: se a animação não rodar (aba em segundo plano, aparelho lento), termina na posição final
+      setTimeout(() => { if (current && tlOpen.progress() < 1) tlOpen.progress(1); }, 2500);
+      if (kb) setTimeout(() => pv.querySelector(".pv__close").focus({ preventScroll: true }), 600);   // foco no Fechar só para quem usa teclado
+    };
+
+    const close = () => {
+      if (!current) return;
+      const { src } = current;
+      const done = () => {
+        pv.classList.remove("is-open", "is-ready"); pv.setAttribute("aria-hidden", "true");
+        pvVideo.pause(); pvVideo.removeAttribute("src"); pvVideo.load();
+        if (src) src.style.visibility = "";
+        document.body.style.overflow = ""; lenis && lenis.start();
+        if (src) (src.closest(".card, .feature") || src).focus?.({ preventScroll: true });
+        current = null;
+      };
+      if (!hasGsap || reduce) return done();
+      const to = src ? rectOf(src) : { left: innerWidth / 2 - 40, top: innerHeight / 2 - 40, width: 80, height: 80 };
+      pv.classList.remove("is-ready");
+      let finished = false;
+      const finish = () => { if (!finished) { finished = true; done(); } };
+      setTimeout(finish, 2000);   // garantia: fecha mesmo se a animação travar
+      gsap.timeline({ onComplete: finish })
+        .to(".pv-in, .pv__close", { opacity: 0, x: 30, duration: 0.35, ease: "power2.in", stagger: { each: 0.03, from: "end" } }, 0)
+        .to(pvMedia, { ...to, borderRadius: src ? getComputedStyle(src).borderRadius : "50%", duration: 0.9, ease: EASE }, 0.15)
+        .to(pvBg, { opacity: 0, duration: 0.5, ease: "power2.inOut" }, 0.5);
+    };
+    const requestClose = () => { if (history.state && history.state.pv) history.back(); else close(); };
+
+    // abrir ao clicar (ou Enter/Espaço) num destaque ou card; o botão do Instagram abre o Instagram normalmente
+    document.addEventListener("click", (e) => {
+      if (e.target.closest(".ig-btn")) return;
+      const host = e.target.closest(".feature[data-slug], .card[data-slug]");
+      if (!host) return;
+      e.preventDefault();
+      open(host.dataset.slug, host.querySelector(".media, .card__media") || host);
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && current) return requestClose();
+      const host = (e.key === "Enter" || e.key === " ") && e.target.closest && e.target.closest(".feature[data-slug], .card[data-slug]");
+      if (host && e.target === host) { e.preventDefault(); open(host.dataset.slug, host.querySelector(".media, .card__media") || host, true, true); }
+    });
+    pv.querySelector(".pv__close").addEventListener("click", requestClose);
+    pvBg.addEventListener("click", requestClose);
+    pvSound.addEventListener("click", () => {
+      pvVideo.muted = !pvVideo.muted;
+      pvSound.textContent = pvVideo.muted ? "Ativar som" : "Som ligado";
+      pvSound.setAttribute("aria-pressed", String(!pvVideo.muted));
+    });
+    window.addEventListener("popstate", () => { if (current) close(); });
+    window.addEventListener("resize", () => {
+      if (!current || !hasGsap) return;
+      const L = layout(current.p, current.src);
+      gsap.set(pvMedia, { left: L.media.x ?? L.media.left, top: L.media.top, width: L.media.width, height: L.media.height });
+      if (innerWidth > 800) Object.assign(pvInfo.style, { left: L.info.left + "px", width: L.info.width + "px" });
+    });
+    // link direto (#projeto=slug) abre o projeto ao carregar
+    const m = location.hash.match(/^#projeto=([\w-]+)/);
+    if (m) {
+      const host = document.querySelector(`[data-slug="${m[1]}"]`);
+      setTimeout(() => open(m[1], host && host.querySelector(".media, .card__media"), false), 900);
+    }
+  }
 
   /* ---------- Showreel modal ---------- */
   const modal = document.querySelector(".modal");

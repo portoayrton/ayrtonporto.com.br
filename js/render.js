@@ -126,7 +126,23 @@
 
   document.body.insertAdjacentHTML(
     "beforeend",
-    `<div class="cursor" aria-hidden="true"></div>
+    `<div class="pv" role="dialog" aria-modal="true" aria-label="Projeto" aria-hidden="true">
+       <div class="pv__bg"></div>
+       <div class="pv__media"><video playsinline loop muted preload="auto"></video>
+         <button class="pv__sound" type="button" aria-pressed="false">Ativar som</button></div>
+       <aside class="pv__info">
+         <button class="pv__close btn-bracket" type="button">Fechar</button>
+         <div class="pv__cat pv-in"></div>
+         <h2 class="pv__title pv-in"></h2>
+         <dl class="pv__facts pv-in"></dl>
+         <p class="pv__desc pv-in"></p>
+         <div class="pv__actions pv-in">
+           <a class="ig-btn ig-btn--big" target="_blank" rel="noopener">${icons.instagram}<span>Ver no Instagram</span></a>
+           <a class="pv__page btn-bracket" href="#">Página do projeto</a>
+         </div>
+       </aside>
+     </div>
+     <div class="cursor" aria-hidden="true"></div>
      <div class="modal" role="dialog" aria-modal="true" aria-label="Showreel">
        <button class="modal__close btn-bracket">Fechar</button>
        <video controls playsinline></video>
@@ -139,7 +155,7 @@
     features.innerHTML = P.filter((p) => p.featured)
       .map(
         (p) => `
-      <a class="feature" href="projeto.html?slug=${p.slug}" data-cursor="play">
+      <article class="feature" data-slug="${p.slug}" tabindex="0" role="button" aria-label="Abrir ${esc(p.title)}">
         <div class="media" data-autoplay>${vid(p, 'data-parallax-media')}</div>
         <div class="feature__body">
           <div class="feature__award"><b>${p.year}</b>${p.award ? `<i></i><span>${esc(p.award)}</span>` : ""}</div>
@@ -151,19 +167,23 @@
             <h3 class="feature__title">${esc(p.title)}</h3>
             <div class="feature__dir">Cliente: ${esc(p.client)}</div>
           </div>
-          <span class="feature__cta btn-bracket">Ver projeto</span>
+          <div class="feature__actions">
+            <span class="btn-bracket">Ver projeto</span>
+            ${p.instagram ? `<a class="ig-btn" href="${p.instagram}" target="_blank" rel="noopener">${icons.instagram}<span>Ver no Instagram</span></a>` : ""}
+          </div>
         </div>
-      </a>`
+      </article>`
       )
       .join("");
   }
 
   /* ---------- Cards (grid) ---------- */
   const card = (p) => `
-    <a class="card${p.vertical ? " card--vertical" : ""}" href="projeto.html?slug=${p.slug}" data-cat="${esc(p.category)}" data-cursor="play" data-flip-id="${p.slug}">
+    <article class="card${p.vertical ? " card--vertical" : ""}" data-slug="${p.slug}" data-cat="${esc(p.category)}" data-flip-id="${p.slug}" tabindex="0" role="button" aria-label="Abrir ${esc(p.title)}">
       <div class="card__media" data-preview>${vid(p)}<span class="card__tag">${esc(p.category)}${p.vertical ? " · 9:16" : ""}</span></div>
       <div class="card__meta"><h3 class="card__title">${esc(p.title)}</h3><span class="card__sub">${esc(p.client)} · ${p.year}</span></div>
-    </a>`;
+      ${p.instagram ? `<a class="ig-btn ig-btn--sm" href="${p.instagram}" target="_blank" rel="noopener" aria-label="${esc(p.title)} no Instagram">${icons.instagram}<span>Instagram</span></a>` : ""}
+    </article>`;
 
   const grid = document.getElementById("grid");
   if (grid) {
