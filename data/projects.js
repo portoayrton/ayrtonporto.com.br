@@ -18,6 +18,7 @@ window.AP_PROJECTS = [
   {
     slug: "encantados",
     stills: [0, 7, 10],
+    silent: true,                     // sem trilha de áudio (o post é o doc inteiro): esconde "Ativar som"
     title: "Encantados",
     category: "Documentário",
     year: 2026,

@@ -129,6 +129,7 @@
       const srcVideo = src && src.querySelector("video");
       pvVideo.src = (srcVideo && (srcVideo.currentSrc || srcVideo.src)) || p.video;
       pvVideo.muted = true; pvSound.textContent = "Ativar som"; pvSound.setAttribute("aria-pressed", "false");
+      pvSound.hidden = !!p.silent;          // vídeo sem áudio: botão não aparece
       if (srcVideo && srcVideo.currentTime) { try { pvVideo.currentTime = srcVideo.currentTime; } catch (e) {} }
       play(pvVideo);
       const from = src ? rectOf(src) : { left: innerWidth / 2 - 40, top: innerHeight / 2 - 40, width: 80, height: 80 };
