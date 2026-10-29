@@ -18,15 +18,34 @@
       requestAnimationFrame(raf);
     }
   }
-  document.querySelectorAll('a[href^="#"], a[href^="index.html#"]').forEach((a) => {
+  /* Links para seções (Serviços, Contato…): se a seção existe nesta página, rola até ela;
+     se não existe, abre a home já posicionada na seção. */
+  const goTo = (target, immediate) =>
+    lenis ? lenis.scrollTo(target, { offset: -90, immediate }) : target.scrollIntoView({ behavior: immediate ? "auto" : "smooth" });
+  document.querySelectorAll('a[href*="#"]').forEach((a) => {
+    const id = a.getAttribute("href").split("#")[1];
+    if (!id) return;
     a.addEventListener("click", (e) => {
-      const id = a.getAttribute("href").split("#")[1];
-      const target = id && document.getElementById(id);
-      if (!target) return;
       e.preventDefault();
-      lenis ? lenis.scrollTo(target, { offset: -60 }) : target.scrollIntoView({ behavior: "smooth" });
+      document.body.classList.remove("menu-open");
+      const target = document.getElementById(id);
+      if (target) return goTo(target, false);
+      const home = (document.querySelector(".nav__logo") || {}).getAttribute?.("href") || "index.html";
+      location.href = home + "#" + id;
     });
   });
+  // chegou de outra página com #secao: depois que a página monta, posiciona logo abaixo do menu
+  if (location.hash.length > 1) {
+    if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+    const target = document.getElementById(decodeURIComponent(location.hash.slice(1)));
+    if (target) {
+      let moved = false;   // se a pessoa já rolou, não puxa a página de volta
+      ["wheel", "touchmove", "keydown"].forEach((ev) => window.addEventListener(ev, () => (moved = true), { once: true, passive: true }));
+      const land = () => { if (!moved) goTo(target, true); };
+      (document.fonts ? document.fonts.ready : Promise.resolve()).then(() => setTimeout(land, 400));
+      window.addEventListener("load", () => setTimeout(land, 200));
+    }
+  }
 
   /* ---------- Vídeos: autoplay em tela + preview no hover ---------- */
   const play = (v) => { const p = v.play(); if (p) p.catch(() => {}); };
