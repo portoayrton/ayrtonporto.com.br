@@ -31,7 +31,7 @@ def links(s):
 # Vídeos locais: no arquivo único cada projeto é um clipe curto que começa 1 s antes do "start"
 def clips(s):
     s = re.sub(r'assets/video/([\w-]+)\.mp4(#t=[\d.]+)?', lambda m: f'@@V:{m.group(1)}@@#t=1', s)
-    return re.sub(r'data-start="[\d.]+"', 'data-start="1"', s)
+    return s  # assets/video já são os clipes de 12 s (29/10): start já é relativo
 
 
 templates = ""
@@ -43,7 +43,6 @@ css = read("css/style.css").replace("url(../assets/logo.png)", f'url("data:image
 
 data = read("data/projects.js")
 data = data.replace("const v = (slug) => `assets/video/${slug}.mp4`;", "const v = (slug) => window.AP_VIDEO[slug];")
-data = re.sub(r"start: [\d.]+,", "start: 1,", data)
 render = links(read("js/render.js"))
 main_js = read("js/main.js")
 for name, code in [("data", data), ("render", render), ("main", main_js)]:
