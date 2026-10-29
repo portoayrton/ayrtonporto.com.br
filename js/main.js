@@ -81,11 +81,25 @@
   if (!touch && hasGsap) {
     const xTo = gsap.quickTo(cursor, "x", { duration: 0.35, ease: "power3" });
     const yTo = gsap.quickTo(cursor, "y", { duration: 0.35, ease: "power3" });
+    // a bolinha olha a cor do fundo embaixo dela: fundo claro -> preta; escuro -> amarela
+    const isLightBg = (el) => {
+      for (let n = el; n && n.nodeType === 1; n = n.parentElement) {
+        const m = getComputedStyle(n).backgroundColor.match(/[\d.]+/g);
+        if (m && (m[3] === undefined || +m[3] > 0.5)) {
+          return (0.2126 * m[0] + 0.7152 * m[1] + 0.0722 * m[2]) / 255 > 0.6;
+        }
+      }
+      return false;
+    };
     window.addEventListener("mousemove", (e) => {
       xTo(e.clientX); yTo(e.clientY);
       cursor.classList.add("is-on");
-      cursor.classList.toggle("is-play", !!e.target.closest("[data-cursor='play']"));
+      document.body.classList.add("has-cursor");
+      cursor.classList.toggle("is-dark", isLightBg(e.target));
     });
+    // ao sair da janela a bolinha some e a setinha do sistema volta
+    document.addEventListener("mouseleave", () => cursor.classList.remove("is-on"));
+    document.addEventListener("mouseenter", () => cursor.classList.add("is-on"));
   }
 
   /* ---------- Formulário (demo) ---------- */

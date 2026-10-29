@@ -53,7 +53,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
           mask: url(../assets/logo.png) center / contain no-repeat;
 }
 .footer__top .brand { height: 44px; }
-.nav__links { display: flex; justify-content: space-between; width: min(72%, 760px); }
+.nav__links { position: absolute; left: 50%; transform: translateX(-50%); display: flex; justify-content: center; gap: clamp(32px, 6vw, 96px); }
 .nav__links a { font-size: 11px; letter-spacing: .2em; text-transform: uppercase; position: relative; }
 .nav__links a::after {
   content: ""; position: absolute; left: 0; bottom: -4px; height: 1px; width: 100%;
@@ -300,11 +300,15 @@ body.menu-open .nav__burger span:last-child { transform: translateY(-6px) rotate
   background: var(--yellow); color: var(--ink); mix-blend-mode: normal;
   display: grid; place-items: center; font-size: 0; font-weight: 900; letter-spacing: .15em;
   opacity: 0;
-  transition: width .35s var(--ease), height .35s var(--ease), margin .35s var(--ease), font-size .2s, opacity .3s;
+  transition: background-color .25s var(--ease), opacity .3s;
 }
 .cursor.is-on { opacity: 1; }
-.cursor.is-play { width: 90px; height: 90px; margin: -45px 0 0 -45px; font-size: 11px; }
+.cursor.is-dark { background: var(--ink); }     /* em fundo claro (amarelo/creme) a bolinha fica preta */
 @media (hover: none) { .cursor { display: none; } }
+/* no computador o mouse do site é só a bolinha (a setinha some depois que a bolinha aparece) */
+@media (hover: hover) and (pointer: fine) {
+  body.has-cursor, body.has-cursor * { cursor: none !important; }
+}
 
 /* ---------- Page transition curtain ---------- */
 .curtain { position: fixed; inset: 0; z-index: 95; background: var(--yellow); transform: scaleY(1); transform-origin: top; pointer-events: none; display: grid; place-items: center; }
@@ -318,7 +322,7 @@ body.menu-open .nav__burger span:last-child { transform: translateY(-6px) rotate
 /* ---------- Responsive ---------- */
 @media (max-width: 900px) {
   .nav__links {
-    position: fixed; inset: 0; z-index: -1; width: auto; background: var(--ink);
+    position: fixed; inset: 0; z-index: -1; width: auto; background: var(--ink); transform: none;
     flex-direction: column; justify-content: center; align-items: center; gap: 28px;
     clip-path: inset(0 0 100% 0); transition: clip-path .6s var(--ease);
   }

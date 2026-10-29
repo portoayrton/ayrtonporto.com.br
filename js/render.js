@@ -126,7 +126,7 @@
 
   document.body.insertAdjacentHTML(
     "beforeend",
-    `<div class="cursor" aria-hidden="true">PLAY</div>
+    `<div class="cursor" aria-hidden="true"></div>
      <div class="modal" role="dialog" aria-modal="true" aria-label="Showreel">
        <button class="modal__close btn-bracket">Fechar</button>
        <video controls playsinline></video>
