@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ap.films — Filmmaker</title>
+  <meta name="description" content="Ayrton Porto — filmmaker. Documentário, moda, interiores e conteúdo de marca, do Amazonas a São Paulo.">
+  <link rel="preconnect" href="https://api.fontshare.com">
+  <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=satoshi@500,900&display=swap">
+  <link rel="icon" type="image/png" href="assets/favicon.png">
+  <link rel="stylesheet" href="css/style.css?v=8">
+</head>
+<body data-page="home">
+  <div class="curtain" aria-hidden="true"><span class="brand"></span></div>
+
+  <main>
+    <!-- HERO -->
+    <section class="hero">
+      <video class="hero__reel" muted playsinline loop autoplay preload="auto" id="heroReel"></video>
+      <div class="hero__reel-shade"></div>
+      <div class="hero__inner container">
+        <h1 class="brandword" aria-label="ap.films"><span class="brandword__w">ap</span><span class="brandword__dot"></span><span class="brandword__w">films</span></h1>
+        <div class="hero__sub">
+          <span class="pill"></span>
+          <p>Filmmaker<br>making the ordinary look cinematic.</p>
+          <span class="pill"></span>
+        </div>
+        <div class="hero__actions"><button class="btn-bracket" data-reel>Play reel</button></div>
+      </div>
+    </section>
+
+    <!-- DESTAQUES -->
+    <section class="container" id="trabalhos">
+      <div class="features" id="features"></div>
+      <div class="center" style="padding:60px 0 0"><a class="btn-bracket" href="trabalhos.html">Todos os trabalhos</a></div>
+    </section>
+
+    <!-- FEITO PARA A TELA + SERVIÇOS -->
+    <section class="section section-light crafted" id="servicos" style="margin-top:120px">
+      <div class="container">
+        <div class="crafted__stage">
+          <h2 class="crafted__title" data-split>Do Amazonas a São Paulo, em movimento.</h2>
+          <div class="crafted__float f1" data-float="0.6" data-autoplay><video muted playsinline loop preload="metadata" src="assets/video/encantados.mp4#t=3.5"></video></div>
+          <div class="crafted__float f2" data-float="1.1" data-autoplay><video muted playsinline loop preload="metadata" src="assets/video/parintins-de-cima.mp4#t=3.1"></video></div>
+          <div class="crafted__float f3" data-float="0.85" data-autoplay><video muted playsinline loop preload="metadata" src="assets/video/spfw-2026.mp4#t=27"></video></div>
+        </div>
+
+        <div class="services">
+          <div class="services__head"><h2 data-split>Serviços</h2><span class="caps">O que eu faço</span></div>
+          <div class="service"><span class="service__num">01</span><span class="service__name">Documentário</span><span class="service__desc">Cinegrafia de entrevistas, paisagem e personagem, com olhar de cinema e luz natural.</span></div>
+          <div class="service"><span class="service__num">02</span><span class="service__name">Drone</span><span class="service__desc">Voos e imagens aéreas de cidade, rio e floresta, finalizados com color.</span></div>
+          <div class="service"><span class="service__num">03</span><span class="service__name">Edição & Color</span><span class="service__desc">Montagem, color grading em DaVinci Resolve e finalização para cada tela.</span></div>
+          <div class="service"><span class="service__num">04</span><span class="service__name">Moda, Interiores & Eventos</span><span class="service__desc">Desfiles, ambientes, arquitetos e lançamentos, com bastidores e cobertura completa.</span></div>
+          <div class="service"><span class="service__num">05</span><span class="service__name">Conteúdo para Redes</span><span class="service__desc">Reels em 9:16 para marcas, com cortes, legendas e ritmo pensados para o Instagram.</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROCESSO -->
+    <section class="section">
+      <div class="container">
+        <div class="process__title">
+          <span class="caps">Como eu trabalho</span>
+          <h2 data-split>Making the ordinary look cinematic</h2>
+        </div>
+        <hr class="rule">
+        <div class="process__grid">
+          <div data-reveal><div class="n">01</div><h3>HISTÓRIA PRIMEIRO</h3><p>Todo projeto começa pela narrativa: tema, tom e emoção antes de ligar a câmera.</p></div>
+          <div data-reveal><div class="n">02</div><h3>DESIGN COM INTENÇÃO</h3><p>Luz, espaço e movimento pensados a serviço da história e da marca.</p></div>
+          <div data-reveal><div class="n">03</div><h3>TORNAR REAL</h3><p>Gravo, edito e entrego em todos os formatos — com o mesmo cuidado do primeiro frame.</p></div>
+        </div>
+        <hr class="rule">
+        <div class="center"><a class="btn-bracket" href="sobre.html">Sobre mim</a></div>
+      </div>
+    </section>
+
+    <!-- CLIENTES -->
+    <section class="clients">
+      <div class="container clients__head">
+        <h2 data-split>Com quem já gravei</h2>
+        <div class="clients__count">
+          <b><span data-count="7" data-prefix="0">0</span></b><span class="caps">trabalhos selecionados</span>
+        </div>
+      </div>
+      <div class="marquee" id="marquee"></div>
+    </section>
+  </main>
+
+  <script src="data/projects.js?v=8"></script>
+  <script src="js/render.js?v=8"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+  <script>document.getElementById("heroReel").src = window.AP_REEL;</script>
+  <script src="js/main.js?v=8"></script>
+</body>
+</html>
