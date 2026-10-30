@@ -251,10 +251,10 @@
   /* ---------- Cursor ---------- */
   const cursor = document.querySelector(".cursor");
   if (!touch && hasGsap) {
-    // segue o mouse quadro a quadro (gsap.ticker = requestAnimationFrame): cobre 95% da distância em ~75 ms,
+    // segue o mouse quadro a quadro (gsap.ticker = requestAnimationFrame): cobre 95% da distância em ~125 ms,
     // igual em 60 ou 120 Hz, sem o atraso de 0,35 s do tween antigo
     const pos = { x: innerWidth / 2, y: innerHeight / 2 }, target = { x: pos.x, y: pos.y };
-    const SPEED = 40;                                   // maior = mais colada no mouse
+    const SPEED = 24;                                   // maior = mais colada no mouse (40 ficou "dura"; 24 = 95% em ~125 ms, o "smooth" que ele pediu)
     gsap.set(cursor, { x: pos.x, y: pos.y, force3D: true });
     gsap.ticker.add((time, dt) => {
       const k = 1 - Math.exp(-(dt / 1000) * SPEED);
