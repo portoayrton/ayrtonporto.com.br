@@ -5,7 +5,9 @@
   - start: segundo em que o preview do hover começa (e o quadro de capa do card)
   - featured: true = aparece em destaque na home (cards grandes)
   - instagram: link do post completo
-  - stills: segundos depois do start para as 3 imagens da página do projeto
+  - stills: segundos depois do start para as 3 imagens da página do projeto (pode ser negativo: antes do start)
+  - focus: (opcional) object-position do vídeo no card e nos stills, ex. "50% 18%" — vídeo vertical com
+    pessoa em pé: sobe o corte para a cabeça não ficar fora do card 16:10
 */
 const v = (slug) => `assets/video/${slug}.mp4`;
 const ig = (code) => `https://www.instagram.com/p/${code}/`;
@@ -35,7 +37,7 @@ window.AP_PROJECTS = [
   },
   {
     slug: "spfw-2026",
-    stills: [1, 3, 9.5],
+    stills: [0, 3.5, 7],
     title: "SPFW 2026",
     category: "Moda",
     year: 2026,
@@ -44,7 +46,7 @@ window.AP_PROJECTS = [
     role: "Captação, Edição",
     award: "São Paulo Fashion Week",
     video: v("spfw-2026"),
-    start: 1,
+    start: 4,
     featured: true,
     instagram: ig("DesK1ruupXq"),
     quotes: [],
@@ -104,7 +106,7 @@ window.AP_PROJECTS = [
   },
   {
     slug: "pelmex",
-    stills: [0, 5, 9],
+    stills: [0, 2, 5],
     title: "Pelmex+",
     category: "Publicidade",
     year: 2025,
@@ -113,7 +115,7 @@ window.AP_PROJECTS = [
     role: "Captação, Edição",
     award: "",
     video: v("pelmex"),
-    start: 1,
+    start: 6,
     vertical: true,
     instagram: ig("DLVox7BPXTe"),
     quotes: [],
@@ -155,7 +157,7 @@ window.AP_PROJECTS = [
   },
   {
     slug: "bw-curadoria-formas",
-    stills: [0, 3, 7.1],
+    stills: [0, 2.4, 6.5],
     title: "Curadoria SP · Formas e texturas",
     category: "Interiores",
     year: 2026,
@@ -164,7 +166,7 @@ window.AP_PROJECTS = [
     role: "Videomaker, Editor",
     award: "",
     video: v("bw-curadoria-formas"),
-    start: 1,
+    start: 1.6,
     vertical: true,
     instagram: "https://www.instagram.com/bwestudioam/reel/Dexbx7LRJZi/",
     quotes: [],
@@ -223,7 +225,7 @@ window.AP_PROJECTS = [
   },
   {
     slug: "bw-olhar-ep2",
-    stills: [0, 2.9, 8.8],
+    stills: [-7, -3, 0],
     title: "O Olhar BW · Ep. 2 Transparência",
     category: "Interiores",
     year: 2026,
@@ -232,15 +234,16 @@ window.AP_PROJECTS = [
     role: "Videomaker, Editor",
     award: "",
     video: v("bw-olhar-ep2"),
-    start: 1,
+    start: 8.5,
     vertical: true,
+    focus: "50% 18%",               // enquadramento do corte no card/stills (object-position): sobe para não cortar a cabeça
     instagram: "https://www.instagram.com/bwestudioam/reel/DZnfUFPxqNG/",
     quotes: [],
     description: "A transparência como elemento de composição: peças de acrílico que criam leveza, camadas e profundidade no ambiente."
   },
   {
     slug: "bw-olhar-ep3",
-    stills: [0, 3.4, 10],
+    stills: [0, 2, 7],
     title: "O Olhar BW · Ep. 3 Matéria e textura",
     category: "Interiores",
     year: 2026,
@@ -249,7 +252,7 @@ window.AP_PROJECTS = [
     role: "Videomaker, Editor",
     award: "",
     video: v("bw-olhar-ep3"),
-    start: 1,
+    start: 4.5,
     vertical: true,
     instagram: "https://www.instagram.com/bwestudioam/reel/DaD8XDUx3I4/",
     quotes: [],
@@ -274,7 +277,7 @@ window.AP_PROJECTS = [
   },
   {
     slug: "bw-olhar-ep5",
-    stills: [0, 4.1, 8.1],
+    stills: [0, 1.5, 3.5],
     title: "O Olhar BW · Ep. 5 Procedência",
     category: "Interiores",
     year: 2026,
@@ -283,15 +286,16 @@ window.AP_PROJECTS = [
     role: "Videomaker, Editor",
     award: "",
     video: v("bw-olhar-ep5"),
-    start: 1,
+    start: 7.5,
     vertical: true,
+    focus: "50% 20%",               // enquadramento do corte no card/stills (object-position): sobe para não cortar a cabeça
     instagram: "https://www.instagram.com/bwestudioam/reel/Dav5gIexbK6/",
     quotes: [],
     description: "A importância da procedência e de uma curadoria que valoriza histórias, processos e artistas."
   },
   {
     slug: "bw-olhar-ep6",
-    stills: [0, 3, 9.15],
+    stills: [0, 3, 8],
     title: "O Olhar BW · Ep. 6 Palavras",
     category: "Interiores",
     year: 2026,
@@ -300,8 +304,9 @@ window.AP_PROJECTS = [
     role: "Videomaker, Editor",
     award: "",
     video: v("bw-olhar-ep6"),
-    start: 1,
+    start: 3.5,
     vertical: true,
+    focus: "50% 15%",               // enquadramento do corte no card/stills (object-position): sobe para não cortar a cabeça
     instagram: "https://www.instagram.com/bwestudioam/reel/Da6FlU0xw2K/",
     quotes: [],
     description: "Peças que usam palavras, frases e mensagens como linguagem, transformando o design em comunicação."

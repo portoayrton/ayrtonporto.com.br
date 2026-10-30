@@ -3,8 +3,9 @@
   const P = window.AP_PROJECTS || [];
   const page = document.body.dataset.page;
   const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const focus = (p) => (p.focus ? ` style="object-position:${esc(p.focus)}"` : "");   // enquadramento do corte (vertical com gente em pé)
   const vid = (p, extra = "") =>
-    `<video muted playsinline loop preload="metadata" src="${p.video}#t=${p.start || 0}" data-start="${p.start || 0}" ${extra}></video>`;
+    `<video muted playsinline loop preload="metadata" src="${p.video}#t=${p.start || 0}" data-start="${p.start || 0}"${focus(p)} ${extra}></video>`;
 
   const NAV = [
     ["Trabalhos", "trabalhos.html", "trabalhos"],
@@ -220,7 +221,7 @@
       </section>
       <section class="container">
         <div class="player" data-cursor="play">
-          <video playsinline preload="metadata" src="${p.video}#t=${p.start || 0}"></video>
+          <video playsinline preload="metadata" src="${p.video}#t=${p.start || 0}"${focus(p)}></video>
           <button class="player__play" aria-label="Assistir"><span>ASSISTIR</span></button>
         </div>
         <div class="facts" data-reveal>
@@ -232,7 +233,7 @@
         <p class="lead" data-split>${esc(p.description)}</p>
         ${p.instagram ? `<div style="margin-top:40px" data-reveal><a class="btn-bracket" href="${p.instagram}" target="_blank" rel="noopener">Assistir no Instagram</a></div>` : ""}
         <div class="stills">
-          ${(p.stills || [1.6, 4, 6.4]).map((s) => `<div data-reveal><video muted playsinline preload="metadata" src="${p.video}#t=${(p.start || 0) + s}"></video></div>`).join("")}
+          ${(p.stills || [1.6, 4, 6.4]).map((s) => `<div data-reveal><video muted playsinline preload="metadata" src="${p.video}#t=${(p.start || 0) + s}"${focus(p)}></video></div>`).join("")}
         </div>
       </section>
       <section class="container" style="margin-top:120px">
