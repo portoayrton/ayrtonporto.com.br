@@ -251,8 +251,18 @@
   /* ---------- Cursor ---------- */
   const cursor = document.querySelector(".cursor");
   if (!touch && hasGsap) {
-    const xTo = gsap.quickTo(cursor, "x", { duration: 0.35, ease: "power3" });
-    const yTo = gsap.quickTo(cursor, "y", { duration: 0.35, ease: "power3" });
+    // segue o mouse quadro a quadro (gsap.ticker = requestAnimationFrame): cobre 95% da distância em ~75 ms,
+    // igual em 60 ou 120 Hz, sem o atraso de 0,35 s do tween antigo
+    const pos = { x: innerWidth / 2, y: innerHeight / 2 }, target = { x: pos.x, y: pos.y };
+    const SPEED = 40;                                   // maior = mais colada no mouse
+    gsap.set(cursor, { x: pos.x, y: pos.y, force3D: true });
+    gsap.ticker.add((time, dt) => {
+      const k = 1 - Math.exp(-(dt / 1000) * SPEED);
+      const dx = target.x - pos.x, dy = target.y - pos.y;
+      if (Math.abs(dx) < 0.05 && Math.abs(dy) < 0.05) return;
+      pos.x += dx * k; pos.y += dy * k;
+      gsap.set(cursor, { x: pos.x, y: pos.y });
+    });
     // a bolinha olha a cor do fundo embaixo dela: fundo claro -> preta; escuro -> amarela
     const isLightBg = (el) => {
       for (let n = el; n && n.nodeType === 1; n = n.parentElement) {
@@ -263,12 +273,17 @@
       }
       return false;
     };
+    let lastTarget = null;
     window.addEventListener("mousemove", (e) => {
-      xTo(e.clientX); yTo(e.clientY);
+      target.x = e.clientX; target.y = e.clientY;
+      if (!cursor.classList.contains("is-on")) { pos.x = target.x; pos.y = target.y; gsap.set(cursor, { x: pos.x, y: pos.y }); }   // 1º movimento: já nasce no lugar
       cursor.classList.add("is-on");
       document.body.classList.add("has-cursor");
-      cursor.classList.toggle("is-dark", isLightBg(e.target));
-    });
+      if (e.target !== lastTarget) {                      // só mede a cor quando muda o elemento sob o mouse
+        lastTarget = e.target;
+        cursor.classList.toggle("is-dark", isLightBg(e.target));
+      }
+    }, { passive: true });
     // ao sair da janela a bolinha some e a setinha do sistema volta
     document.addEventListener("mouseleave", () => cursor.classList.remove("is-on"));
     document.addEventListener("mouseenter", () => cursor.classList.add("is-on"));
